@@ -32,10 +32,29 @@ PY
   export QWEN_API_KEY="$TOKEN"
 fi
 
-exec qwen \
+qwen \
   --auth-type openai \
   --model qwen3.6-plus \
   --openai-base-url "https://qwen.aikit.club/v1" \
   --openai-api-key "$QWEN_API_KEY" \
-  --append-system-prompt "Treat ${ROOT_DIR} as the only project root. Resolve all relative paths against ${ROOT_DIR}. Never create, read, or modify files outside ${ROOT_DIR} unless the user explicitly asks for an absolute path outside the project. Always answer in Russian unless the user explicitly requests another language. If the user writes in Russian, do not switch to English." \
-  "$@"
+  --append-system-prompt "Ты русскоязычный coding agent. Always treat ${ROOT_DIR} as the only project root. Resolve all relative paths against ${ROOT_DIR}. Never create, read, or modify files outside ${ROOT_DIR} unless the user explicitly asks for an absolute path outside the project. Всегда отвечай на русском языке, если пользователь явно не попросил другой язык. Если пользователь пишет на русском, не переходи на английский. Не добавляй HTML-блоки, details, summary, Response ID или Request ID в ответы." \
+  "$@" | python3 -c '
+import sys
+
+inside_details = False
+
+for line in sys.stdin:
+    stripped = line.strip()
+
+    if stripped.startswith("<details>"):
+        inside_details = True
+        continue
+
+    if inside_details:
+        if stripped.endswith("</details>"):
+            inside_details = False
+        continue
+
+    sys.stdout.write(line)
+    sys.stdout.flush()
+'
