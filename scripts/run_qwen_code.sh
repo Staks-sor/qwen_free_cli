@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
+TOOL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_ROOT="${QWEN_PROJECT_ROOT:-$(cd "$TOOL_DIR/.." && pwd)}"
+cd "$PROJECT_ROOT"
 
 export QWEN_CODE_LANG="${QWEN_CODE_LANG:-ru-RU}"
 
@@ -13,13 +14,16 @@ if ! command -v qwen >/dev/null 2>&1; then
 fi
 
 if [[ -z "${QWEN_API_KEY:-}" ]]; then
+  export QWEN_TOOL_DIR="$TOOL_DIR"
   TOKEN="$(python3 - <<'PY'
 import json
 from pathlib import Path
 
-credentials_path = Path("credentials.json")
+import os
+
+credentials_path = Path(os.environ["QWEN_TOOL_DIR"]) / "credentials.json"
 if not credentials_path.exists():
-    raise SystemExit("credentials.json not found. Run: cp credentials.example.json credentials.json")
+    raise SystemExit("credentials.json not found. Run: cp qwen_free_cli/credentials.example.json qwen_free_cli/credentials.json")
 
 data = json.loads(credentials_path.read_text(encoding="utf-8"))
 token = data.get("sessions", [{}])[0].get("qwen_credentials", {}).get("access_token")
@@ -32,12 +36,14 @@ PY
   export QWEN_API_KEY="$TOKEN"
 fi
 
+export QWEN_AIKIT_API_KEY="${QWEN_AIKIT_API_KEY:-$QWEN_API_KEY}"
+
 qwen \
   --auth-type openai \
   --model qwen3.6-plus \
   --openai-base-url "https://qwen.aikit.club/v1" \
   --openai-api-key "$QWEN_API_KEY" \
-  --append-system-prompt "Ты русскоязычный coding agent. Always treat ${ROOT_DIR} as the only project root. Resolve all relative paths against ${ROOT_DIR}. Never create, read, or modify files outside ${ROOT_DIR} unless the user explicitly asks for an absolute path outside the project. Всегда отвечай на русском языке, если пользователь явно не попросил другой язык. Если пользователь пишет на русском, не переходи на английский. Не добавляй HTML-блоки, details, summary, Response ID или Request ID в ответы." \
+  --append-system-prompt "Ты русскоязычный coding agent. Always treat ${PROJECT_ROOT} as the only project root. Resolve all relative paths against ${PROJECT_ROOT}. The helper folder ${TOOL_DIR} contains Qwen launch files; do not edit it unless the user explicitly asks. Never create, read, or modify files outside ${PROJECT_ROOT} unless the user explicitly asks for an absolute path outside the project. Всегда отвечай на русском языке, если пользователь явно не попросил другой язык. Если пользователь пишет на русском, не переходи на английский. Не добавляй HTML-блоки, details, summary, Response ID или Request ID в ответы." \
   "$@" | python3 -c '
 import sys
 

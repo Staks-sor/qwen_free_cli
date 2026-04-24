@@ -2,14 +2,14 @@
 
 Минимальный шаблон для запуска `Qwen Code CLI` как coding agent через OpenAI-compatible API.
 
-Главная идея: `Qwen Code` запускается в терминале, получает API-ключ из локального `credentials.json` и работает с файлами текущего проекта.
+Главная идея: папка `qwen_free_cli` добавляется внутрь любого проекта, а `Qwen Code` запускается из нее и работает с файлами родительского проекта.
 
 ## Что получится
 
 После настройки можно открыть проект в PyCharm, VS Code или обычном терминале и запустить:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 Дальше агенту можно писать обычные задачи:
@@ -34,21 +34,28 @@
 
 ```text
 Qwen Code CLI
-  -> берет access_token из credentials.json
+  -> запускается из ./qwen_free_cli
+  -> берет access_token из ./qwen_free_cli/credentials.json
   -> подключается к https://qwen.aikit.club/v1
   -> использует модель qwen3.6-plus
-  -> читает и меняет файлы текущего проекта
+  -> читает и меняет файлы родительского проекта
 ```
 
 Мы не используем `Qwen OAuth` в окне IDE. Запуск идет через `--auth-type openai`, поэтому CLI получает ключ напрямую из проекта.
 
 ## Установка с GitHub
 
-Склонируй репозиторий:
+Создай или открой папку своего проекта:
+
+```bash
+mkdir my_project
+cd my_project
+```
+
+Склонируй `qwen_free_cli` внутрь проекта:
 
 ```bash
 git clone https://github.com/Staks-sor/qwen_free_cli.git
-cd qwen_free_cli
 ```
 
 Установи `Qwen Code CLI`:
@@ -57,12 +64,12 @@ cd qwen_free_cli
 npm install -g @qwen-code/qwen-code@latest
 ```
 
-Создай Python-окружение:
+Создай Python-окружение в корне своего проекта:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r qwen_free_cli/requirements.txt
 ```
 
 На Windows PowerShell:
@@ -70,24 +77,27 @@ python3 -m pip install -r requirements.txt
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-py -m pip install -r requirements.txt
+py -m pip install -r qwen_free_cli\requirements.txt
 ```
+
+Важно: `.venv` создается в корне твоего проекта, а зависимости берутся из `qwen_free_cli/requirements.txt`.
+
 
 ## Настройка ключа
 
 Скопируй шаблон:
 
 ```bash
-cp credentials.example.json credentials.json
+cp qwen_free_cli/credentials.example.json qwen_free_cli/credentials.json
 ```
 
 На Windows PowerShell:
 
 ```powershell
-copy credentials.example.json credentials.json
+copy qwen_free_cli\credentials.example.json qwen_free_cli\credentials.json
 ```
 
-Открой `credentials.json` и вставь свой токен:
+Открой `qwen_free_cli/credentials.json` и вставь свой токен:
 
 ```json
 {
@@ -103,20 +113,20 @@ copy credentials.example.json credentials.json
 
 Реальный токен нужно вставить вместо `PASTE_YOUR_TOKEN_HERE`.
 
-Файл `credentials.json` добавлен в `.gitignore`, поэтому он не должен попадать на GitHub.
+Файл `qwen_free_cli/credentials.json` добавлен в `.gitignore`, поэтому он не должен попадать на GitHub.
 
 ## Запуск агента
 
 Сделай скрипт исполняемым:
 
 ```bash
-chmod +x scripts/run_qwen_code.sh
+chmod +x qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 Запусти интерактивный режим:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 Для проверки можно написать:
@@ -136,7 +146,7 @@ chmod +x scripts/run_qwen_code.sh
 One-shot режим:
 
 ```bash
-./scripts/run_qwen_code.sh "ответь одним словом: тест" --output-format text
+./qwen_free_cli/scripts/run_qwen_code.sh "ответь одним словом: тест" --output-format text
 ```
 
 подходит для быстрых текстовых проверок, но некоторые OpenAI-compatible endpoints могут вернуть tool-call как обычный текст вместо реального изменения файлов.
@@ -144,7 +154,7 @@ One-shot режим:
 ## Быстрая проверка API через Python
 
 ```bash
-python3 chat.py
+python3 qwen_free_cli/chat.py
 ```
 
 Это не coding agent, а простой чат через тот же API-ключ. Он нужен только для проверки, что токен и endpoint работают.
@@ -156,7 +166,7 @@ python3 chat.py
 В PyCharm:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 можно запускать прямо во встроенном терминале.
@@ -164,7 +174,7 @@ python3 chat.py
 В VS Code:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 можно запускать во встроенном терминале. Если есть расширения для агентов, они не обязательны: этот шаблон уже работает через CLI.
@@ -195,7 +205,7 @@ git status
 Если `Qwen Code` просит `Qwen OAuth`, значит агент запущен не через этот скрипт. Запускай так:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
 
 Если агент создает файлы не там, проси явно указывать относительный путь:
@@ -207,5 +217,5 @@ git status
 Если one-shot режим вернул JSON с tool-call, но файл не появился, используй интерактивную сессию:
 
 ```bash
-./scripts/run_qwen_code.sh
+./qwen_free_cli/scripts/run_qwen_code.sh
 ```
