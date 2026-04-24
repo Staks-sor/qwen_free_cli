@@ -60,17 +60,17 @@ npm install -g @qwen-code/qwen-code@latest
 Создай Python-окружение:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 На Windows PowerShell:
 
 ```powershell
-python -m venv .venv
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+py -m pip install -r requirements.txt
 ```
 
 ## Настройка ключа
@@ -144,7 +144,7 @@ One-shot режим:
 ## Быстрая проверка API через Python
 
 ```bash
-python chat.py
+python3 chat.py
 ```
 
 Это не coding agent, а простой чат через тот же API-ключ. Он нужен только для проверки, что токен и endpoint работают.
