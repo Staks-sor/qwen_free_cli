@@ -48,7 +48,7 @@ Qwen Code CLI
 
 ```bash
 git clone <repo-url>
-cd qwen-code-cli-starter
+cd <repo-folder>
 ```
 
 Установи `Qwen Code CLI`:
