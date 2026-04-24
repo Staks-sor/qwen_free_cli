@@ -23,7 +23,7 @@ import os
 
 credentials_path = Path(os.environ["QWEN_TOOL_DIR"]) / "credentials.json"
 if not credentials_path.exists():
-    raise SystemExit("credentials.json not found. Run: cp qwen_free_cli/credentials.example.json qwen_free_cli/credentials.json")
+    raise SystemExit("credentials.json not found in qwen_free_cli.")
 
 data = json.loads(credentials_path.read_text(encoding="utf-8"))
 token = data.get("sessions", [{}])[0].get("qwen_credentials", {}).get("access_token")

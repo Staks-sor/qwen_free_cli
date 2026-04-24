@@ -6,9 +6,7 @@ __pycache__/
 
 # Local secrets
 .env
-credentials.json
 
 # Qwen Code local state
 .qwen/.env
 .qwen/PROJECT_SUMMARY.md
-

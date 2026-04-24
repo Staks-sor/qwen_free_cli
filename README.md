@@ -85,19 +85,7 @@ py -m pip install -r qwen_free_cli\requirements.txt
 
 ## Настройка ключа
 
-Скопируй шаблон:
-
-```bash
-cp qwen_free_cli/credentials.example.json qwen_free_cli/credentials.json
-```
-
-На Windows PowerShell:
-
-```powershell
-copy qwen_free_cli\credentials.example.json qwen_free_cli\credentials.json
-```
-
-Открой `qwen_free_cli/credentials.json` и вставь свой токен:
+Открой готовый файл `qwen_free_cli/credentials.json` и вставь свой токен:
 
 ```json
 {
@@ -113,7 +101,7 @@ copy qwen_free_cli\credentials.example.json qwen_free_cli\credentials.json
 
 Реальный токен нужно вставить вместо `PASTE_YOUR_TOKEN_HERE`.
 
-Файл `qwen_free_cli/credentials.json` добавлен в `.gitignore`, поэтому он не должен попадать на GitHub.
+Не публикуй `credentials.json` с реальным токеном.
 
 ## Запуск агента
 
@@ -186,7 +174,7 @@ python3 qwen_free_cli/chat.py
 - `QWEN.md` - правила для агента: русский язык и работа только внутри текущей папки.
 - `qwen_client.py` - минимальный Python-клиент для API.
 - `chat.py` - простой терминальный чат для проверки API.
-- `credentials.example.json` - безопасный шаблон токена.
+- `credentials.json` - файл для токена с безопасным placeholder.
 
 ## Безопасность
 
@@ -198,7 +186,7 @@ python3 qwen_free_cli/chat.py
 git status
 ```
 
-В репозиторий должен попадать `credentials.example.json`, но не должен попадать `credentials.json`.
+Перед публикацией проверь, что в `credentials.json` не остался реальный токен.
 
 ## Частые ошибки
 

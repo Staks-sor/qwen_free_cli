@@ -28,7 +28,7 @@ class QwenClient:
 
         if not self.api_token:
             raise RuntimeError(
-                "Qwen token not found. Set QWEN_API_KEY or create credentials.json from credentials.example.json."
+                "Qwen token not found. Set QWEN_API_KEY or edit credentials.json."
             )
 
     def _load_token(self) -> str | None:
