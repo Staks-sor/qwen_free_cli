@@ -5,7 +5,9 @@ TOOL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROJECT_ROOT="${QWEN_PROJECT_ROOT:-$(cd "$TOOL_DIR/.." && pwd)}"
 cd "$PROJECT_ROOT"
 
-export QWEN_CODE_LANG="${QWEN_CODE_LANG:-ru-RU}"
+export QWEN_CODE_LANG="${QWEN_CODE_LANG:-ru}"
+export LANG="${LANG:-ru_RU.UTF-8}"
+export LC_ALL="${LC_ALL:-ru_RU.UTF-8}"
 
 if ! command -v qwen >/dev/null 2>&1; then
   echo "Qwen Code CLI is not installed."
@@ -51,14 +53,13 @@ inside_details = False
 
 for line in sys.stdin:
     line = line.replace("^D\b\b", "").replace("\x04", "")
-    stripped = line.strip()
 
-    if stripped.startswith("<details>"):
+    if "<details" in line:
         inside_details = True
         continue
 
     if inside_details:
-        if stripped.endswith("</details>"):
+        if "</details>" in line:
             inside_details = False
         continue
 
