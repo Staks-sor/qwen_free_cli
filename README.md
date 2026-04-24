@@ -47,8 +47,8 @@ Qwen Code CLI
 Склонируй репозиторий:
 
 ```bash
-git clone https://github.com/Staks-sor/qwen_free_cli.git qwen-code-cli-starter
-cd qwen-code-cli-starter
+git clone https://github.com/Staks-sor/qwen_free_cli.git
+cd qwen_free_cli
 ```
 
 Установи `Qwen Code CLI`:
