@@ -38,7 +38,7 @@ fi
 
 export QWEN_AIKIT_API_KEY="${QWEN_AIKIT_API_KEY:-$QWEN_API_KEY}"
 
-qwen \
+script -q /dev/null qwen \
   --auth-type openai \
   --model qwen3.6-plus \
   --openai-base-url "https://qwen.aikit.club/v1" \
@@ -50,6 +50,7 @@ import sys
 inside_details = False
 
 for line in sys.stdin:
+    line = line.replace("^D\b\b", "").replace("\x04", "")
     stripped = line.strip()
 
     if stripped.startswith("<details>"):
