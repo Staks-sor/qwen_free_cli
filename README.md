@@ -85,7 +85,13 @@ py -m pip install -r qwen_free_cli\requirements.txt
 
 ## Настройка ключа
 
-Открой готовый файл `qwen_free_cli/credentials.json` и вставь свой токен:
+Создай локальный файл с учётными данными из безопасного шаблона:
+
+```bash
+cp qwen_free_cli/credentials.example.json qwen_free_cli/credentials.json
+```
+
+Затем открой `qwen_free_cli/credentials.json` и вставь свой токен:
 
 ```json
 {
@@ -174,7 +180,8 @@ python3 qwen_free_cli/chat.py
 - `QWEN.md` - правила для агента: русский язык и работа только внутри текущей папки.
 - `qwen_client.py` - минимальный Python-клиент для API.
 - `chat.py` - простой терминальный чат для проверки API.
-- `credentials.json` - файл для токена с безопасным placeholder.
+- `credentials.example.json` - безопасный шаблон файла с токеном.
+- `credentials.json` - локальный файл с токеном; Git его игнорирует.
 
 ## Безопасность
 
@@ -186,7 +193,7 @@ python3 qwen_free_cli/chat.py
 git status
 ```
 
-Перед публикацией проверь, что в `credentials.json` не остался реальный токен.
+`credentials.json` исключён через `.gitignore`, но перед публикацией всё равно проверь `git status`.
 
 ## Частые ошибки
 
