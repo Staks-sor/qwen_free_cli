@@ -43,8 +43,26 @@ class QwenClient:
             if not credentials_path.exists():
                 continue
 
-            data = json.loads(credentials_path.read_text(encoding="utf-8"))
-            token = data.get("sessions", [{}])[0].get("qwen_credentials", {}).get("access_token")
+            try:
+                data = json.loads(credentials_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                raise RuntimeError(
+                    f"Cannot read Qwen credentials from {credentials_path}: {exc}"
+                ) from exc
+
+            sessions = data.get("sessions") if isinstance(data, dict) else None
+            if not isinstance(sessions, list) or not sessions:
+                continue
+
+            first_session = sessions[0]
+            if not isinstance(first_session, dict):
+                continue
+
+            credentials = first_session.get("qwen_credentials")
+            if not isinstance(credentials, dict):
+                continue
+
+            token = credentials.get("access_token")
             if token:
                 return token
 
